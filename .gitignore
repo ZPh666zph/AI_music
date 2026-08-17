@@ -1,0 +1,71 @@
+# ── 第三方技能包 & 无关目录 (整个排除) ──
+Skill/
+.reasonix/
+musicgen-chord/
+code/
+sysu_leizhang_1/
+atlas/
+fluidsynth/
+paper/
+train_data/
+汇报进度/
+
+# ── 模型权重 (上传到 Hugging Face, 不进 Git) ──
+outputs/
+checkpoints/
+
+# ── 大型数据 & 音源 ──
+data/
+soundfonts/
+*.zip
+*.docx
+*.jsonl
+
+# ── 原始音频 (试听用 mp3 在 assets/) ──
+*.wav
+
+# ── 内部文档 PDF ──
+meeting_briefing.pdf
+stage_summary.pdf
+paper_draft.pdf
+*.md.pdf
+
+# ── 全局排除 PDF 编译产物，仅保留 figures 矢量图 ──
+*.pdf
+!final_paper/figures/*.pdf
+!paper_v/figures/*.pdf
+
+# ── LaTeX 编译产物 ──
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
+final_paper/build/
+
+# ── Python 缓存 ──
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# ── 中间产物文档 ──
+meeting_briefing.md
+stage_summary.md
+step2_*.md
+step3_design.md
+moe_chinese_style_design.md
+step4_model_planning.py
+paper_rewriting_output/
+generate_docx.py
+build_stage_report.py
+build_final_report.py
+
+# ── 其他 ──
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

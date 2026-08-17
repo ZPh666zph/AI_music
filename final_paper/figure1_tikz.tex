@@ -1,0 +1,62 @@
+% ═══════════════════════════════════════════════════════════
+% Figure 1: 跨模态映射概览 (TikZ)
+% 直接粘贴进 main.tex 的 preamble 或 body
+% 需要在 preamble 加: \usepackage{tikz}
+% ═══════════════════════════════════════════════════════════
+
+\begin{figure}[H]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=1.2cm,
+    cam/.style={draw=blue!60, fill=blue!8, rounded corners=6pt, minimum width=2.2cm, minimum height=1.1cm, align=center, font=\footnotesize\bfseries},
+    tok/.style={draw=red!60, fill=red!8, rounded corners=6pt, minimum width=2.2cm, minimum height=1.1cm, align=center, font=\footnotesize\bfseries},
+    arrow/.style={->, >=stealth, thick, color=gray!50, line width=0.8pt},
+    label/.style={font=\scriptsize\color{gray}, midway, fill=white, inner sep=1pt},
+]
+
+% ── Title ──
+\node[font=\normalsize\bfseries] at (0, 4.5) {视频镜头语言 $\longrightarrow$ 音乐 Token 跨模态映射};
+
+% ── Left column: Camera Lens ──
+\node[cam] (C1) at (-4.5, 2.5) {特写 Close-up\\\scriptsize 聚焦单一主体};
+\node[cam] (C2) at (-4.5, 0.8) {远景 Wide shot\\\scriptsize 展现全局环境};
+\node[cam] (C3) at (-4.5, -0.9) {推进 Zoom in\\\scriptsize 由远及近渐变};
+\node[cam] (C4) at (-4.5, -2.6) {调色 Color grading\\\scriptsize 统一视觉质感};
+\node[cam] (C5) at (-4.5, -4.3) {慢动作 Slow motion\\\scriptsize 时间感受延展};
+
+% ── Right column: Music Token ──
+\node[tok] (T1) at (4.5, 2.5) {独奏/声部减少\\\scriptsize [VOICES:1-2] [TEX:sparse]};
+\node[tok] (T2) at (4.5, 0.8) {全织体/交响化\\\scriptsize [VOICES:8+] [TEX:dense]};
+\node[tok] (T3) at (4.5, -0.9) {渐强+织体加密\\\scriptsize [DYN:CRESC] [TEX:$\uparrow$]};
+\node[tok] (T4) at (4.5, -2.6) {音色设计/混响\\\scriptsize [COLOR:warm/bright] [REVERB]};
+\node[tok] (T5) at (4.5, -4.3) {放宽节奏/legato\\\scriptsize [TEMPO:60-70] [ART:legato]};
+
+% ── Arrows with labels ──
+\draw[arrow] (C1.east) -- (T1.west) node[label, midway] {空间聚焦};
+\draw[arrow] (C2.east) -- (T2.west) node[label, midway] {空间展开};
+\draw[arrow] (C3.east) -- (T3.west) node[label, midway] {动态渐变};
+\draw[arrow] (C4.east) -- (T4.west) node[label, midway] {质感统一};
+\draw[arrow] (C5.east) -- (T5.west) node[label, midway] {时间延展};
+
+% ── Dimension labels ──
+\node[font=\scriptsize\bfseries, text=blue!70] at (-4.5, 5.2) {视觉维度 (Video Cinematography)};
+\node[font=\scriptsize\bfseries, text=red!70] at (4.5, 5.2) {音乐维度 (Music Token DSL)};
+\node[font=\tiny, text=gray] at (0, 3.6) {Texture (织体)};
+\node[font=\tiny, text=gray] at (0, 0.0) {Dynamics (动态)};
+\node[font=\tiny, text=gray] at (0, -1.7) {Timbre (音色)};
+\node[font=\tiny, text=gray] at (0, -3.8) {Rhythm/Articulation};
+
+% ── Bottom: Six dimensions summary ──
+\node[draw=gray!30, fill=gray!5, rounded corners=8pt, minimum width=14cm, minimum height=1.2cm] at (0, -5.8) {
+    \footnotesize\bfseries
+    Harmony [KEY/CHORD/PROG] $\cdot$ Rhythm [BPM/TIME/SYNC]
+    $\cdot$ Texture [MONO/POLY/VOICES] $\cdot$ Dynamics [pp--ff/CRESC]
+    $\cdot$ Timbre [INST/COLOR/REVERB] $\cdot$ Articulation [LEGATO/STACCATO/MARCATO]
+};
+
+\end{tikzpicture}
+}
+\caption{跨模态概念映射：九组视频镜头语言与六维音乐 Token 之间的结构性对应关系。左侧为视频导演术语，右侧为对应音乐学术语及其 Token 表示，中间箭头标注映射的功能类别。}
+\label{fig:cross_modal_mapping}
+\end{figure}
