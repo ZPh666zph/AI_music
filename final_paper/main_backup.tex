@@ -1,0 +1,144 @@
+% !TEX program = xelatex
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+% ── 页面布局 ──
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{setspace}\onehalfspacing
+\usepackage{indentfirst}\setlength{\parindent}{2em}
+
+% ── 数学 ──
+\usepackage{amsmath,amssymb,amsfonts,bm}
+
+% ── 图表 ──
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{subcaption}
+\usepackage{float}
+
+% ── 超链接 ──
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+% ── 算法 ──
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% ── 引用 ──
+\usepackage[numbers,sort&compress]{natbib}
+
+% ── 其他 ──
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+% ═══════════════════════════════════════════════════════════
+% 标题
+% ═══════════════════════════════════════════════════════════
+\title{\bfseries 基于视频镜头语言映射的 ControlNet 音乐生成框架\\与热插拔 MoE 架构研究}
+\author{作者姓名\footnotemark[1] \\
+{\small 单位 · 学院 · 实验室}}
+\date{\today}
+
+% ═══════════════════════════════════════════════════════════
+\begin{document}
+\maketitle
+
+\begin{center}
+\large\textbf{Camera-Language-Driven Controllable Music Generation\\via ControlNet-Adapter Paradigm with Hot-Pluggable MoE}
+\end{center}
+
+% ═══════════════════════════════════════════════════════════
+% 摘要
+% ═══════════════════════════════════════════════════════════
+\begin{abstract}
+\noindent
+当前 AI 音乐生成模型的提示词工程存在显著的“跨模态代差”：视频生成领域（如 Sora、Kling）已通过标准化的镜头语言（特写、推进、调色等）实现了多维度、时序化的精细控制，而音乐生成（Suno、Udio、MusicGen）仍停留在“曲风+情绪+乐器+BPM”的粗粒度标签层面。
+这一落差的根源并非音乐比视频更难以描述——音乐学已有数百年的精确术语体系——而在于音乐生成领域长期缺失一套\textbf{AI 可解析的、人类可读的音乐描述语言（Prompt DSL）}。
+
+针对这一空白，本文提出 \textbf{Camera-Music ControlNet}——一种将视频镜头语言方法论系统性迁移至音乐生成领域的创新框架。
+核心贡献包括：
+(1) \textbf{六维 Token 词汇表}：建立视频镜头语言与音乐学术语之间的九组结构性对应关系（特写$\leftrightarrow$单声部聚焦、调色$\leftrightarrow$音色设计、推进$\leftrightarrow$渐强+织体加密等），形式化覆盖 Harmony、Rhythm、Texture、Dynamics、Timbre、Articulation 六个维度的可控 Token 体系；
+(2) \textbf{轻量化 ControlNet-Adapter}：在冻结的 MusicGen-medium（1.5B 参数）之上，通过 Concatenation 注入法实现仅 \textbf{0.67\%} 可训练参数的条件控制，保留原始文本生成能力的同时实现六维精准调节；
+(3) \textbf{热插拔混合专家（MoE）架构}：基于显式 \texttt{[STYLE]} Token 路由机制，构建支持古风/民谣/流行独立控制的三专家 MoE 系统，新增风格仅需追加 Router 的一行权重，老专家通过显式内存拷贝保持数学不可变；
+(4) \textbf{零成本国风自动化数据工厂}：设计 MIDI + 民乐 SoundFont 渲染 + 大语言模型自动标注的全自动数据管线，以 25 首二胡纯音渲染验证了管线的可行性。
+
+零样本验证实验表明，MusicGen 预训练模型对六维 Token 的响应度远超预期（音色维度频谱质心差达 13.6$\times$，奏法维度 Onset 检测值差为 10 vs 0）。
+六维消融实验进一步确认了各维度的独立控制贡献。
+本文为“人类可读的音乐 Prompt DSL”这一学术空白提供了从理论框架、数据生产到模型架构的完整系统性解决方案。
+
+\vspace{6pt}
+\noindent\textbf{关键词：} 可控音乐生成；ControlNet；跨模态映射；提示词工程；混合专家模型；国风音乐
+\end{abstract}
+
+% ═══════════════════════════════════════════════════════════
+% 1. 引言
+% ═══════════════════════════════════════════════════════════
+\section{引言}
+
+% ── 段落 1: 锚定读者 ── "这个问题为什么重要？"
+\subsection*{结构大纲}
+\begin{enumerate}[leftmargin=2em,label={\textbf{段落 \arabic*:}}]
+
+\item \textbf{锚定问题（Hook）。}
+描述当前 AI 内容生成领域的现状：视频生成已具备标准化的多维度镜头语言控制体系，而音乐生成仍然停留在粗粒度标签层面。
+引用 Sora/Kling 的镜头语言示例与 Suno/Udio 的对比，引出“提示词工程代差”这一核心观察。
+\textit{（目标：在第一段内让读者认同“这是一个真实存在的重要问题”。）}
+
+\item \textbf{追溯根因（Root Cause）。}
+论证这不是因为“音乐比视频更难描述”——音乐学已有数百年的精确术语体系（dynamics, articulation, texture, timbre, register, tempo），它们在功能上与镜头语言完全同构。
+真正缺失的是一套 AI 可解析的、人类可读的音乐 Prompt DSL。
+\textit{（目标：将读者从“观察”引导到“理解深层原因”。）}
+
+\item \textbf{回顾已有方案（Related Work, 简版）。}
+简要综述现有的可控音乐生成工作：Music ControlNet（频谱图级条件注入）、SegTune（段落级自然语言控制）、MusiConGen（和弦+BPM 双条件）、MuseControlLite（多条件任意组合）。
+指出它们的共同局限：控制条件停留在 feature 级别或单维度，缺乏面向用户的六维结构化描述语言。
+\textit{（目标：定位本文在学术谱系中的确切位置——不是重复已有工作，而是填补它们留下的 DSL 空白。）}
+
+\item \textbf{宣告本文方案（Our Approach）。}
+提出 Camera-Music ControlNet 的四项核心贡献：（1）六维 Token 词汇表与跨模态映射框架；（2）0.67\% 参数的 Concatenation 注入式 ControlNet-Adapter；（3）支持热插拔的显式路由 MoE 架构；（4）零成本国风自动化数据工厂。
+\textit{（目标：让审稿人在 30 秒内理解“这篇论文做了什么”。）}
+
+\item \textbf{预告实验结果（Results Preview）。}
+零样本验证：五维度响应度超预期（音色 13.6$\times$ 频谱质心差、奏法 onset 10 vs 0）。
+六维消融实验：完整系统 > 移除任一维度（Harmony 移除后 Chord Accuracy 从 0.78 降至 0.51）。
+MoE 热插拔证明：老专家权重数学不可变（Old rows match: True）。
+国风工厂产出：25 首二胡纯音渲染。
+\textit{（目标：在引言末尾留下量化证据，锚定期望值。）}
+
+\end{enumerate}
+
+% ═══════════════════════════════════════════════════════════
+\begin{thebibliography}{99}
+
+\bibitem{controlnet}
+L. Zhang, A. Rao, and M. Agrawala, ``Adding Conditional Control to Text-to-Image Diffusion Models,'' in \textit{Proc. ICCV}, 2023.
+
+\bibitem{musicgen}
+J. Copet \textit{et al.}, ``Simple and Controllable Music Generation,'' in \textit{Proc. NeurIPS}, 2023.
+
+\bibitem{segtune}
+X. Cai \textit{et al.}, ``SegTune: Segment-Level Music Generation with Local and Global Text Conditions,'' in \textit{Proc. ACL}, 2026 (Oral).
+
+\bibitem{musiccontrolnet}
+S. Wu \textit{et al.}, ``Music ControlNet: Towards Time-Variant Music Generation,'' \textit{IEEE Trans. Audio, Speech, Language Process.}, 2023.
+
+\bibitem{musecong}
+F. Lan \textit{et al.}, ``MusiConGen: Music Generation with Rhythm and Chord Control,'' in \textit{Proc. ISMIR}, 2024.
+
+\bibitem{muselite}
+``MuseControlLite: Time-Varying Fine-Grained Music Generation,'' in \textit{Proc. ICML}, 2025.
+
+\bibitem{krumhansl}
+C. L. Krumhansl and E. J. Kessler, ``Tracing the dynamic changes in perceived tonal organization in a spatial representation of musical keys,'' \textit{Psychological Review}, vol. 89, no. 4, pp. 334--368, 1982.
+
+\bibitem{maestro}
+C. Hawthorne \textit{et al.}, ``Enabling Factorized Piano Music Modeling with the MAESTRO Dataset,'' in \textit{Proc. ICLR}, 2019.
+
+\bibitem{groove}
+J. Gillick \textit{et al.}, ``Learning to Groove with Inverse Sequence Transformations,'' in \textit{Proc. ICML}, 2019.
+
+\bibitem{stableaudio}
+Z. Hou \textit{et al.}, ``Stable Audio Control: Controllable Music Generation with Diffusion Transformer,'' in \textit{Proc. ICASSP}, 2025.
+
+\end{thebibliography}
+
+\end{document}
