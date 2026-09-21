@@ -8,7 +8,7 @@ MontageDirector steers a **frozen MusicGen-medium backbone** with an ultra-light
 musical styles with an **explicitly-routed, hot-pluggable MoE** whose row-appended router
 matrix provably incurs **zero catastrophic forgetting**.
 
-> 🎧 **Demo audio / listening-test pack:** `<DEMO_AUDIO_URL>`
+> 🎧 **Demo audio (repo):** [`assets/audio/`](assets/audio/) · **anonymous listening-test pack (24 MB):** `<DEMO_AUDIO_URL>`
 > 📄 **Paper (PDF, 16 pp.):** `<PAPER_URL>`
 > 📦 **Model weights & full 12 GB recorded corpus:** `<RELEASE_URL>`
 >
