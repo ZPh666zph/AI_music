@@ -1,0 +1,35 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- 模型权重 / 检查点（过大，不入库；按 README 下载）---
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+checkpoints/
+pretrained/
+
+# --- 数据 / 生成音频（大文件，不入库）---
+data/audio/
+data/*.jsonl
+data/ref_audio/
+results/
+outputs/
+*.wav
+*.mp3
+*.flac
+
+# --- 环境 / 工具 ---
+.venv/
+venv/
+env/
+.conda/
+*.log
+*.tar.gz
+
+# --- 本地配置 ---
+.reasonix/

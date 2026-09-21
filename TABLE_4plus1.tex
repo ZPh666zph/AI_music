@@ -1,0 +1,23 @@
+% MontageDirector - objective comparison (RTX 5090, gufeng test split, n = 63)
+\begin{table}[t]
+\centering
+\caption{Objective comparison on the gufeng test split (63 shared prompts). FAD$\downarrow$: VGGish
+Fr\'echet Audio Distance; CLAP$\uparrow$: LAION-CLAP cosine similarity. Ours trains 0.67\% of the
+frozen 2.02B backbone on a disjoint 602-track train split.}
+\label{tab:objective}
+\small
+\begin{tabular}{lccc}
+\toprule
+\textbf{Model} & \textbf{Params} & \textbf{FAD}$\downarrow$ & \textbf{CLAP}$\uparrow$ \
+\midrule
+MusicGen-medium        & 100\% (FT)    & 4.3353 & $0.0785 \pm 0.0892$ \
+AudioLDM 2             & 100\% (FT)    & 5.5866 & $0.0392 \pm 0.0924$ \
+Stable Audio Open      & 100\% (FT)    & \textbf{3.9340} & $0.1862 \pm 0.1010$ \
+MusiConGen             & 12.5\% (LoRA) & 5.0561 & \textbf{0.1871} $\pm 0.0748$ \
+\midrule
+MontageDirector (CE 10 ep) & \textbf{0.67\%} & 4.4519 & $-0.0197 \pm 0.0967$ \
+MontageDirector (CE 40 ep) & 0.67\%          & 5.5177 & $-0.0583 \pm 0.0694$ \
+MontageDirector (w/o CE)   & 0.67\%          & 5.9494 & $-0.0573 \pm 0.0730$ \
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,30 @@
+# torch>=2.0 (CUDA recommended)
+torch>=2.0
+
+# === MontageDirector core ===
+# IMPORTANT: the KV-concat injection (encoder_outputs precompute) is implemented
+# and verified against transformers==4.35.0. Never upgrade blindly without
+# re-testing `src/inference/run_ours.py`.
+transformers==4.35.0
+huggingface-hub<1
+tokenizers<0.15
+
+numpy
+soundfile
+tqdm
+librosa
+pretty_midi
+music21
+
+# === Optional: 8-bit optimizer for low-VRAM training ===
+# bitsandbytes
+
+# === Baselines / generation backbones ===
+# MusicGen / Stable Audio Open / AudioLDM 2 (via HF)
+# diffusers
+# accelerate
+# safetensors
+
+# === Evaluation ===
+# laion-clap
+# frechet-audio-distance
